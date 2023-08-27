@@ -29,7 +29,7 @@ run() (
         last_run=0
     fi
 
-    next_run=$((${last_run} + ${cooldown}))
+    next_run=$((last_run + cooldown))
 
     # If the cooldown has exipred, run the command
     # Otherwise, print the output of the last run
@@ -65,7 +65,7 @@ main() (
 
 format() (
     out=$(main)
-    echo -n "${out}" | tr '\n' '|' | sed 's/|/ | /g'
+    printf '%s' "${out}" | tr '\n' '|' | sed 's/|/ | /g'
 )
 
 format
