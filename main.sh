@@ -5,6 +5,9 @@ script_dir=$(dirname -- "$( readlink -f -- "$0"; )")
 libs_dir="${script_dir}/libs"
 states_dir="${script_dir}/states"
 
+# Secrets
+. "${script_dir}"/.env
+
 mkdir -p "${states_dir}"
 now=$(date +'%s')
 
@@ -57,6 +60,9 @@ main() (
 
     # Battery
     run battery.sh 600
+
+    # Weather
+    run weather.sh 3600
 
     # Datetime
     run datetime.sh
