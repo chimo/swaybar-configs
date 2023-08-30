@@ -14,13 +14,14 @@ now=$(date +'%s')
 run() (
     filename="${1}"
     cooldown="${2}"
+    shift; shift
     script="${libs_dir}/${filename}"
     statefile="${states_dir}/${filename%.*}".state
 
     # No cooldown. No need for statefile.
     # Just execute and return
     if [ -z "${cooldown}" ]; then
-        ${script}
+        ${script} "${@}"
         return
     fi
 
@@ -37,7 +38,7 @@ run() (
     # If the cooldown has exipred, run the command
     # Otherwise, print the output of the last run
     if [ "${now}" -gt "${next_run}" ]; then
-        ${script} | tee "${statefile}"
+        ${script} "${@}" | tee "${statefile}"
     else
         cat "${statefile}"
     fi
