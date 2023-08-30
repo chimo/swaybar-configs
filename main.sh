@@ -62,8 +62,11 @@ main() (
     # Battery
     run battery.sh 600
 
+    # Get coordinates
+    coords=$(run coordinates.sh 3600)
+
     # Weather
-    run weather.sh 3600
+    run weather.sh 3600 "${coords}"
 
     # Datetime
     run datetime.sh
