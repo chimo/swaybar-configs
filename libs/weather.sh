@@ -46,15 +46,13 @@ get_temperature() (
 main() (
     coords="${1}"
 
-    if [ ! -z "${coords}" ]; then
-        lat=$(echo "${coords}" | cut -d, -f1)
-        lon=$(echo "${coords}" | cut -d, -f2)
-    fi
-
-    # Fallback to capital if location is nil
     if [ -z "${coords}" ]; then
-        lat="45.424722"
+        # Fallback to capital if location is nil
         lon="-75.695"
+        lat="45.424722"
+    else
+        lon="${coords#*,}"
+        lat="${coords%,*}"
     fi
 
     json=$(get_weather "${lon}" "${lat}")
