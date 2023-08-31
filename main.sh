@@ -60,7 +60,7 @@ main() (
     run check-for-updates.sh 3600
 
     # Battery
-    run battery.sh 600
+    run battery.sh 60
 
     # Get coordinates
     coords=$(run coordinates.sh 3600)
