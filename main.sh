@@ -56,6 +56,9 @@ main() (
     # Packages due for updates in running containers
     run check-for-updates.sh 3600
 
+    # Bluetooth
+    run bluetooth.sh 600
+
     # Battery
     run battery.sh 60
 
