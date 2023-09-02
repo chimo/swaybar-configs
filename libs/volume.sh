@@ -22,33 +22,12 @@ get_from_pipewire() (
 )
 
 
-# I had this from a previous non-pipewire install, so why no use it as
-# fallback, I guess.
-get_from_alsa() (
-    # Volume
-    vol=$(amixer get Master | grep "Mono: Playback")
-    vol_percent=$(echo "$vol" | awk '{print $4}' | tr -d "[]")
-
-    # Mute state
-    state=$(echo "$vol" | awk '{print $6}' | tr -d "[]")
-
-    if [ "${state}" = "off" ]; then
-        muted="muted"
-    else
-        muted="unmuted"
-    fi
-
-    echo "${vol_percent},${muted}"
-)
-
-
 main() (
-    if ! vol=$(get_from_pipewire); then
-        vol=$(get_from_alsa)
-    fi
+    vol=$(get_from_pipewire)
 
     echo "${vol}"
 )
+
 
 main
 
