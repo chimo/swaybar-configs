@@ -53,9 +53,6 @@ main() (
     # VPN status
     # TODO
 
-    # Audio state
-    # TODO
-
     # Packages due for updates in running containers
     run check-for-updates.sh 3600
 
@@ -67,6 +64,9 @@ main() (
 
     # Weather
     run weather.sh 3600 "${coords}"
+
+    # Audio state
+    run volume.sh 5
 
     # Datetime
     run datetime.sh
