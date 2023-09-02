@@ -38,9 +38,13 @@ run() (
     # If the cooldown has exipred, run the command
     # Otherwise, print the output of the last run
     if [ "${now}" -gt "${next_run}" ]; then
-        ${script} "${@}" | tee "${statefile}"
+        out=$(${script} "${@}" | tee "${statefile}")
     else
-        cat "${statefile}"
+        out=$(cat "${statefile}")
+    fi
+
+    if [ -n "${out}" ]; then
+        echo "${out}"
     fi
 )
 
