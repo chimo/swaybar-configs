@@ -71,7 +71,7 @@ EOF
 
 
 main() (
-    connected_devices=$(get_connected_devices "$")
+    connected_devices=$(get_connected_devices)
 
     nb=$(echo "${connected_devices}" | wc -l)
 
