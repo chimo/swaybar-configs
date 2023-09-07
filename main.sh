@@ -78,6 +78,11 @@ main() (
         run weather.sh 3600 "${coords}"
     fi
 
+    # RSS
+    if [ -n "${RSS_API_KEY}" ]; then
+        run rss.sh 3600
+    fi
+
     # Audio state
     run volume.sh 5
 
