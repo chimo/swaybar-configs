@@ -1,7 +1,8 @@
 #!/bin/sh -e
 
 get_battery_info() (
-    bat_info=$(cat /sys/class/power_supply/BAT0/uevent)
+    battery_uevent="${1}"
+    bat_info=$(cat "${battery_uevent}")
     bat_state=$(echo "$bat_info" | grep STATUS | cut -d= -f2)
     bat_full=$(echo "$bat_info" | grep POWER_SUPPLY_CHARGE_FULL= | cut -d= -f2)
     bat_now=$(echo "$bat_info" | grep POWER_SUPPLY_CHARGE_NOW | cut -d= -f2)
@@ -11,8 +12,9 @@ get_battery_info() (
 )
 
 main() (
-    get_battery_info
+    battery_uevent="${1}"
+    get_battery_info "${battery_uevent}"
 )
 
-main
+main "${@}"
 

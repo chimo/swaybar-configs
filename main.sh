@@ -64,7 +64,9 @@ main() (
     run bluetooth.sh 600
 
     # Battery
-    run battery.sh 60
+    if [ -n "${BATTERY_UEVENT}" ]; then
+        run battery.sh 60 "${BATTERY_UEVENT}"
+    fi
 
     # Get coordinates
     coords=$(run coordinates.sh 3600)
