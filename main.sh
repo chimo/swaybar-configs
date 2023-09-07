@@ -69,10 +69,14 @@ main() (
     fi
 
     # Get coordinates
-    coords=$(run coordinates.sh 3600)
+    if [ -n "${LOCATION_SECRET}" ]; then
+        coords=$(run coordinates.sh 3600)
+    fi
 
     # Weather
-    run weather.sh 3600 "${coords}"
+    if [ -n "${WEATHER_SECRET}" ]; then
+        run weather.sh 3600 "${coords}"
+    fi
 
     # Audio state
     run volume.sh 5
