@@ -28,7 +28,7 @@ main() (
     unread_count=$(get_unread_count "${token}")
 
     if [ "${unread_count}" -gt 0 ]; then
-        echo "rss: ${unread_count}"
+        echo -e "\xEF\x82\x9E ${unread_count}"
     fi
 )
 

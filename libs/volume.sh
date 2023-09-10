@@ -13,19 +13,19 @@ get_from_pipewire() (
     muted=$(echo "${output}" | cut -d " " -f3)
 
     if [ "${muted}" = "[MUTED]" ]; then
-        muted="muted"
+        state="\xEF\x9A\xA9" # muted
     else
-        muted="unmuted"
+        state="\xEF\x80\xA8" # unmuted
     fi
 
-    echo "${vol_percent}%,${muted}"
+    echo "${state} ${vol_percent}%"
 )
 
 
 main() (
     vol=$(get_from_pipewire)
 
-    echo "${vol}"
+    echo -e "${vol}"
 )
 
 

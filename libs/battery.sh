@@ -8,7 +8,13 @@ get_battery_info() (
     bat_now=$(echo "$bat_info" | grep POWER_SUPPLY_CHARGE_NOW | cut -d= -f2)
     bat_percent=$(echo "scale=2; $bat_now/$bat_full*100" | bc | cut -d. -f1)
 
-    echo "${bat_state} ${bat_percent}%"
+    if [ "${bat_state}" = "Discharging" ]; then
+        icon="\xEF\x89\x81" # Battery
+    else
+        icon="\xEF\x83\xA7" # Bolt
+    fi
+
+    echo -e "${icon} ${bat_percent}%"
 )
 
 main() (
