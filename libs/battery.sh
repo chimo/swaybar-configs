@@ -14,7 +14,7 @@ get_battery_info() (
         icon="\xEF\x83\xA7" # Bolt
     fi
 
-    echo -e "${icon} ${bat_percent}%"
+    printf "%b %s" "${icon}" "${bat_percent}"
 )
 
 main() (

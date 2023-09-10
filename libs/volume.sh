@@ -25,7 +25,7 @@ get_from_pipewire() (
 main() (
     vol=$(get_from_pipewire)
 
-    echo -e "${vol}"
+    printf "%b" "${vol}"
 )
 
 

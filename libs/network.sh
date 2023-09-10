@@ -71,7 +71,7 @@ main() (
 
     output="${output} ${lan_ip} / ${wan_ip}"
 
-    echo -e "\xEF\x87\xAB ${output}"
+    printf "\xEF\x87\xAB %s" "${output}"
 )
 
 
