@@ -61,7 +61,19 @@ main() (
     humidity=$(get_humidity "${json}")
     condition=$(get_condition "${json}")
 
-    echo "${temperature}°, ${humidity}%, ${condition}"
+
+    case "${condition}" in
+        "Mostly Cloudy")
+            icon="\xEF\x83\x82" # Cloud
+            ;;
+    esac
+
+    # Icons before text when an icon is present.
+    if [ -z "${icon}" ]; then
+        echo "${temperature}°, ${humidity}%, ${condition}"
+    else
+        echo -e "${icon} ${temperature}°, ${humidity}%"
+    fi
 )
 
 
