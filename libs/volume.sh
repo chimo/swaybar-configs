@@ -1,6 +1,6 @@
 #!/bin/sh
 
-get_from_pipewire() (
+get_from_wireplumber() (
     if ! output=$(wpctl get-volume @DEFAULT_AUDIO_SINK@); then
         return 1
     fi
@@ -23,7 +23,7 @@ get_from_pipewire() (
 
 
 main() (
-    vol=$(get_from_pipewire)
+    vol=$(get_from_wireplumber)
 
     printf "%b" "${vol}"
 )
