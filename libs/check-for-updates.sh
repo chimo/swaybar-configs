@@ -2,7 +2,7 @@
 
 _apk() (
     container="${1}"
-    cmd="apk update > /dev/null && apk list -u | wc -l"
+    cmd="apk list -u | wc -l"
 
     _exec "${container}" "${cmd}"
 )
@@ -21,10 +21,7 @@ _exec() (
 )
 
 
-# FIXME: checking the host for updates requires root privs...
 check_host() (
-    #apk update > /dev/null && apk list -u | wc -l
-
     total_host=$(apk list -u | wc -l)
 
     if [ "${total_host}" -gt 0 ]; then
@@ -77,10 +74,6 @@ check_containers() (
 main() (
     check_containers
     check_host
-    #host=$(check_host)
-
-    #echo -e "${containers}\n${host}"
-    #echo "${containers}"
 )
 
 
