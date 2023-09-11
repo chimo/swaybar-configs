@@ -72,7 +72,7 @@ main() (
     if [ -z "${icon}" ]; then
         echo "${temperature}°, ${humidity}%, ${condition}"
     else
-        printf "%b %s, %s%%" "${icon}" "${temperature}" "${humidity}"
+        printf "%b %s°, %s%%" "${icon}" "${temperature}" "${humidity}"
     fi
 )
 
