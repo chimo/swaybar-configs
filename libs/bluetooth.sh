@@ -76,9 +76,13 @@ main() (
     nb=$(echo "${connected_devices}" | wc -l)
 
     if [ "${nb}" -gt 1 ]; then
-        echo "${nb} devices"
+        msg="${nb} devices"
     else
-        echo "${connected_devices}"
+        msg="${connected_devices}"
+    fi
+
+    if [ -n "${msg}" ]; then
+        printf "\xEF\x8A\x94 %s" "${msg}"
     fi
 )
 
