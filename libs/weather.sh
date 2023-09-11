@@ -66,6 +66,13 @@ main() (
         "Mostly Cloudy")
             icon="\xEF\x83\x82" # Cloud
             ;;
+        "Partly Cloudy"|"Mainly Clear") # TODO: sun/moon should be based on sunrise/sunset times
+            if [ "$(date +%H)" -lt 20 ]; then
+                icon="\xEF\x9B\x84" # Sun cloud
+            else
+                icon="\xEF\x9B\x83" # Moon cloud
+            fi
+            ;;
     esac
 
     # Icons before text when an icon is present.
