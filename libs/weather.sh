@@ -73,6 +73,9 @@ main() (
                 icon="\xEF\x9B\x83" # Moon cloud
             fi
             ;;
+        "Light Rain")
+            icon="\xEF\x9C\xBD"
+            ;;
     esac
 
     # Icons before text when an icon is present.
