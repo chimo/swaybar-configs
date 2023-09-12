@@ -9,7 +9,8 @@ _apk() (
 
 
 _apt() (
-    echo "Running apt"
+    # TODO: finish this if/when I have apt-based containers
+    echo "apt: To be implemented..."
 )
 
 
@@ -33,6 +34,7 @@ check_host() (
 check_containers() (
     total_updates=0
     total_containers=0
+    containers=$(lxc list status=running -c n,config:image.os --format csv)
 
     while IFS= read -r line
     do
@@ -62,7 +64,9 @@ check_containers() (
         fi
 
         total_updates=$((total_updates + updates))
-    done < <(lxc list status=running -c n,config:image.os --format csv)
+    done<<EOF
+$containers
+EOF
 
     if [ "${total_updates}" -gt 0 ]; then
         echo "updates: ${total_updates}"
