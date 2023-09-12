@@ -18,7 +18,7 @@ _exec() (
     container="${1}"
     cmd="${2}"
 
-    lxc exec "${container}" -- sh -c "${cmd}"
+    lxc exec "${container}" -- sh -c "${cmd}" < /dev/null
 )
 
 
