@@ -73,6 +73,9 @@ main() (
                 icon="\xEF\x9B\x83" # Moon cloud
             fi
             ;;
+        "Thunderstorm with rainshowers")
+            icon="\xEF\x9D\xAC"
+            ;;
         "Light Rain")
             icon="\xEF\x9C\xBD"
             ;;
