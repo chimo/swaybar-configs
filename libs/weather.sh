@@ -63,6 +63,9 @@ main() (
 
 
     case "${condition}" in
+        "Mainly Sunny")
+            icon="\xEF\x86\x85" # Sun
+            ;;
         "Mostly Cloudy")
             icon="\xEF\x83\x82" # Cloud
             ;;
@@ -78,6 +81,13 @@ main() (
             ;;
         "Light Rain")
             icon="\xEF\x9C\xBD"
+            ;;
+        "Rainshower")
+            if [ "$(date +%H)" -lt 20 ]; then
+                icon="\xEF\x9D\x83" # Sun rain
+            else
+                icon="\xEF\x9C\xBC" # Moon rain
+            fi
             ;;
     esac
 
