@@ -63,7 +63,10 @@ main() (
 
 
     case "${condition}" in
-        "Mainly Sunny")
+        "Clear")
+            icon="\xEF\x86\x86" # Moon
+            ;;
+        "Mainly Sunny"|"Sunny")
             icon="\xEF\x86\x85" # Sun
             ;;
         "Mostly Cloudy")
