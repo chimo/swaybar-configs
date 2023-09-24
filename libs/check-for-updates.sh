@@ -2,7 +2,7 @@
 
 _apk() (
     container="${1}"
-    cmd="apk list -u | wc -l"
+    cmd="apk -q update && apk list -u | wc -l"
 
     _exec "${container}" "${cmd}"
 )
