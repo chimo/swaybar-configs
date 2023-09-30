@@ -83,6 +83,9 @@ main() (
         run rss.sh 3600
     fi
 
+    # Email
+    run mail.sh 300
+
     # Audio state
     run volume.sh 5
 
