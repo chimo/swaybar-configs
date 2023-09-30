@@ -2,7 +2,7 @@
 
 # Define some paths
 script_dir=$(dirname -- "$( readlink -f -- "$0"; )")
-libs_dir="${script_dir}/libs"
+blocks_dir="${script_dir}/blocks"
 states_dir="${script_dir}/states"
 
 # Secrets
@@ -15,7 +15,7 @@ run() (
     filename="${1}"
     cooldown="${2}"
     shift; shift
-    script="${libs_dir}/${filename}"
+    script="${blocks_dir}/${filename}"
     statefile="${states_dir}/${filename%.*}".state
 
     # No cooldown. No need for statefile.
