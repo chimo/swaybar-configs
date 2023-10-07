@@ -69,7 +69,7 @@ main() (
         "Mainly Sunny"|"Sunny")
             icon="\xEF\x86\x85" # Sun
             ;;
-        "Mostly Cloudy")
+        "Mostly Cloudy"|"Cloudy")
             icon="\xEF\x83\x82" # Cloud
             ;;
         "Partly Cloudy"|"Mainly Clear") # TODO: sun/moon should be based on sunrise/sunset times
