@@ -49,7 +49,7 @@ run() (
 )
 
 
-main() (
+run_all() (
     # Network
     # TODO: split signal quality out of this so we can run it more frequently
     run network.sh 3600
@@ -95,9 +95,18 @@ main() (
 
 
 format() (
-    out=$(main)
+    out="${1}"
+
     printf '%s' "${out}" | tr '\n' '|' | sed 's/|/ | /g'
 )
 
-format
+
+main() (
+    out=$(run_all)
+
+    format "${out}"
+)
+
+
+main
 
