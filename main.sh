@@ -9,21 +9,14 @@ states_dir="${script_dir}/states"
 . "${script_dir}"/.env
 
 mkdir -p "${states_dir}"
-now=$(date +'%s')
 
 run() (
     filename="${1}"
     cooldown="${2}"
-    shift; shift
+    protocol="${3}"
+    shift; shift; shift
     script="${blocks_dir}/${filename}"
     statefile="${states_dir}/${filename%.*}".state
-
-    # No cooldown. No need for statefile.
-    # Just execute and return
-    if [ -z "${cooldown}" ]; then
-        ${script} "${@}"
-        return
-    fi
 
     # Get last executed time
     if [ -f "${statefile}" ]; then
@@ -34,8 +27,9 @@ run() (
     fi
 
     next_run=$((last_run + cooldown))
+    now=$(date +'%s')
 
-    # If the cooldown has exipred, run the command
+    # If the cooldown has expired, run the command
     # Otherwise, print the output of the last run
     if [ "${now}" -gt "${next_run}" ]; then
         out=$(${script} "${@}" | tee "${statefile}")
@@ -44,28 +38,34 @@ run() (
     fi
 
     if [ -n "${out}" ]; then
-        echo "${out}"
+        if [ "${protocol}" = "plain" ]; then
+            echo "${out}"
+        else
+            printf '{"full_text": "%s", "name": "%s", "instance": "%s"}' "${out}" "${filename}" "${filename}"
+            echo "" # FIXME: newline...
+        fi
     fi
 )
 
 
 run_all() (
+    protocol="${1}"
     # Network
     # TODO: split signal quality out of this so we can run it more frequently
-    run network.sh 3600
+    run network.sh 3600 "${protocol}"
 
     # VPN status
     # TODO
 
     # Packages due for updates in running containers
-    run check-for-updates.sh 3600
+    run check-for-updates.sh 3600 "${protocol}"
 
     # Bluetooth
-    run bluetooth.sh 600
+    run bluetooth.sh 600 "${protocol}"
 
     # Battery
     if [ -n "${BATTERY_UEVENT}" ]; then
-        run battery.sh 60 "${BATTERY_UEVENT}"
+        run battery.sh 60 "${protocol}" "${BATTERY_UEVENT}"
     fi
 
     # Get coordinates
@@ -75,38 +75,88 @@ run_all() (
 
     # Weather
     if [ -n "${WEATHER_SECRET}" ]; then
-        run weather.sh 3600 "${coords}"
+        run weather.sh 3600 "${protocol}" "${coords}"
     fi
 
     # RSS
     if [ -n "${RSS_API_KEY}" ]; then
-        run rss.sh 3600
+        run rss.sh 3600 "${protocol}"
     fi
 
     # Email
-    run mail.sh 300
+    run mail.sh 300 "${protocol}"
 
     # Audio state
-    run volume.sh 5
+    run volume.sh 5 "${protocol}"
 
     # Datetime
-    run datetime.sh
+    run datetime.sh 0 "${protocol}"
+)
+
+
+send_header() (
+    header='{"version": 1,"click_events": true}'
+
+    echo "${header}"
+
+    # Endless array
+    echo "["
+    echo "[]"
 )
 
 
 format() (
     out="${1}"
+    protocol="${2}"
 
-    printf '%s' "${out}" | tr '\n' '|' | sed 's/|/ | /g'
+    if [ "${protocol}" = "plain" ]; then
+        printf '%s' "${out}" | tr '\n' '|' | sed 's/|/ | /g'
+    else
+        # json
+        printf ',[%s]' "${out}" | tr '\n' ','
+    fi
+)
+
+
+listen() (
+    while read -r line
+    do
+        # FIXME: should actually parse the json
+        block_name=$(echo "${line}" | awk '{print $3}' | tr -d '",')
+
+        block_file="${blocks_dir}/${block_name}"
+
+        if [ -f "${block_file}" ]; then
+            sh -c -- "${block_file} --click&"
+        fi
+    done
 )
 
 
 main() (
-    out=$(run_all)
+    protocol="plain"
 
-    format "${out}"
+    # FIXME: getops
+    if [ "${1}" = "--json" ]; then
+        protocol="json"
+    fi
+
+    if [ "${protocol}" = "json" ]; then
+        send_header
+    fi
+
+    (while true
+    do
+        out=$(run_all "${protocol}")
+
+        format "${out}" "${protocol}"
+
+        sleep 1
+    done)&
+
+    listen
 )
 
 
-main
+main "${@}"
 
