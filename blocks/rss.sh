@@ -23,7 +23,7 @@ get_unread_count() (
 )
 
 
-main() (
+check_for_new_articles() (
     token=$(get_token)
     unread_count=$(get_unread_count "${token}")
 
@@ -33,5 +33,21 @@ main() (
 )
 
 
-main
+launch_reader() (
+    foot -- sh -c 'TERM=tmux-256color newsboat.sh'
+)
+
+
+main() (
+    action="${1}"
+
+    if [ "${action}" = "--click" ]; then
+        launch_reader
+    else
+        check_for_new_articles
+    fi
+)
+
+
+main "${@}"
 
