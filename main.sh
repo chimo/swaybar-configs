@@ -62,7 +62,7 @@ run_all() (
     # TODO
 
     # Packages due for updates in running containers
-    run check-for-updates.sh 3600 "${protocol}"
+    run updates.sh 3600 "${protocol}"
 
     # Bluetooth
     run bluetooth.sh 600 "${protocol}"
