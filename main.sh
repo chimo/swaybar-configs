@@ -74,7 +74,7 @@ run_all() (
 
     # Get coordinates
     if [ -n "${LOCATION_SECRET}" ]; then
-        coords=$(run coordinates.sh 3600)
+        coords=$(run coordinates.sh 3600 "plain")
     fi
 
     # Weather
