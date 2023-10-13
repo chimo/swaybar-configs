@@ -18,16 +18,29 @@ get_from_wireplumber() (
         state="\xEF\x80\xA8" # unmuted
     fi
 
-    echo "${state} ${vol_percent}%"
+    printf '%b %s%%' "${state}" "${vol_percent}"
 )
 
+handle_click() (
+    script_dir=$(dirname -- "$( readlink -f -- "$0"; )")
+    states_dir="${script_dir}/../states"
+    
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+
+    get_from_wireplumber > "${states_dir}/volume.state"
+)
 
 main() (
-    vol=$(get_from_wireplumber)
+    # FIXME: getops
+    action="${1}"
 
-    printf "%b" "${vol}"
+    if [ "${action}" = "--click" ]; then
+        handle_click
+    else
+        get_from_wireplumber
+    fi
 )
 
 
-main
+main "${@}"
 
