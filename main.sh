@@ -18,23 +18,27 @@ run() (
     script="${blocks_dir}/${filename}"
     statefile="${states_dir}/${filename%.*}".state
 
-    # Get last executed time
-    if [ -f "${statefile}" ]; then
-        last_run=$(stat -c %Y "${statefile}")
+    if [ "${cooldown}" -eq 0 ]; then
+        out=$(${script} "${@}")
     else
-        echo "0" > "${statefile}"
-        last_run=0
-    fi
+        # Get last executed time
+        if [ -f "${statefile}" ]; then
+            last_run=$(stat -c %Y "${statefile}")
+        else
+            echo "0" > "${statefile}"
+            last_run=0
+        fi
 
-    next_run=$((last_run + cooldown))
-    now=$(date +'%s')
+        next_run=$((last_run + cooldown))
+        now=$(date +'%s')
 
-    # If the cooldown has expired, run the command
-    # Otherwise, print the output of the last run
-    if [ "${now}" -gt "${next_run}" ]; then
-        out=$(${script} "${@}" | tee "${statefile}")
-    else
         out=$(cat "${statefile}")
+
+        # If the cooldown has expired, run the command
+        # Otherwise, print the output of the last run
+        if [ "${now}" -gt "${next_run}" ]; then
+            ( ${script} "${@}" > "${statefile}" )&
+        fi
     fi
 
     if [ -n "${out}" ]; then
