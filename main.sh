@@ -82,6 +82,8 @@ run_all() (
         run weather.sh 3600 "${protocol}" "${coords}"
     fi
 
+    run location.sh 3600 "${protocol}" "${coords}"
+
     # RSS
     if [ -n "${RSS_API_KEY}" ]; then
         run rss.sh 3600 "${protocol}"
