@@ -25,7 +25,7 @@ run() (
         if [ -f "${statefile}" ]; then
             last_run=$(stat -c %Y "${statefile}")
         else
-            echo "0" > "${statefile}"
+            echo "" > "${statefile}"
             last_run=0
         fi
 
@@ -34,8 +34,8 @@ run() (
 
         out=$(cat "${statefile}")
 
-        # If the cooldown has expired, run the command
-        # Otherwise, print the output of the last run
+        # If the cooldown has expired, run the command so we get updated data
+        # on the next run
         if [ "${now}" -gt "${next_run}" ]; then
             ( ${script} "${@}" > "${statefile}" )&
         fi
