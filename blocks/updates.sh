@@ -121,8 +121,7 @@ $containers
 EOF
 
     if [ "${total_updates}" -gt 0 ]; then
-        echo "updates: ${total_updates}"
-        echo "containers: ${total_containers}"
+        echo "updates: ${total_updates}, containers: ${total_containers}"
     fi
 
     if [ "${total_dist_upgrades}" -gt 0 ]; then
