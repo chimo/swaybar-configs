@@ -93,7 +93,7 @@ check_containers() (
         os="${line#*,}"
 
         case "${os}" in
-            "alpine")
+            "alpine"|"alpinelinux")
                 if [ "${latest_alpine_version}" = "" ]; then
                     latest_alpine_version=$(get_latest_alpine_version)
                 fi
