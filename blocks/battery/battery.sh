@@ -18,7 +18,7 @@ get_battery_info() (
 )
 
 main() (
-    battery_uevent="${1}"
+    battery_uevent="${BATTERY_UEVENT}"
     get_battery_info "${battery_uevent}"
 )
 

@@ -1,8 +1,0 @@
-# Rename this file to .env
-
-# example: /sys/class/power_supply/BAT0/uevent
-export BATTERY_UEVENT=""
-export LOCATION_SECRET=""
-export RSS_API_KEY=""
-export WEATHER_SECRET=""
-

@@ -5,7 +5,7 @@ get_weather() (
     lat="${2}"
 
     wget -O- --header "Secret: ${WEATHER_SECRET}" \
-        "https://weather.chromic.org/?lon=${lon}&lat=${lat}" -q
+        "${WEATHER_ENDPOINT}/?lon=${lon}&lat=${lat}" -q
 )
 
 # This is a job for `jq` really, but I'm trying to keep things minimal and I

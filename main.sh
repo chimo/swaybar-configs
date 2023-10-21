@@ -1,12 +1,9 @@
 #!/bin/sh -e
 
 # Define some paths
-script_dir=$(dirname -- "$( readlink -f -- "$0"; )")
-blocks_dir="${script_dir}/blocks"
-states_dir="${script_dir}/states"
-
-# Secrets
-. "${script_dir}"/.env
+main_dir=$(dirname -- "$( readlink -f -- "$0"; )")
+blocks_dir="${main_dir}/blocks"
+states_dir="${main_dir}/states"
 
 mkdir -p "${states_dir}"
 
@@ -14,8 +11,12 @@ run() (
     filename="${1}"
     cooldown="${2}"
     protocol="${3}"
-    shift; shift; shift
-    script="${blocks_dir}/${filename}"
+    shift 3
+
+    script_dirname=$(basename "${filename}" ".sh")
+    script_dir="${blocks_dir}/${script_dirname}"
+    script="${script_dir}/${filename}"
+    envfile="${script_dir}/.env"
     statefile="${states_dir}/${filename%.*}".state
 
     if [ "${cooldown}" -eq 0 ]; then
@@ -37,7 +38,13 @@ run() (
         # If the cooldown has expired, run the command so we get updated data
         # on the next run
         if [ "${now}" -gt "${next_run}" ]; then
-            ( ${script} "${@}" > "${statefile}" )&
+            (
+                if [ -e "${envfile}" ]; then
+                    . "${envfile}"
+                fi
+
+                ${script} "${@}" > "${statefile}"
+            )&
         fi
     fi
 
@@ -68,26 +75,19 @@ run_all() (
     run bluetooth.sh 600 "${protocol}"
 
     # Battery
-    if [ -n "${BATTERY_UEVENT}" ]; then
-        run battery.sh 60 "${protocol}" "${BATTERY_UEVENT}"
-    fi
+    run battery.sh 60 "${protocol}"
 
     # Get coordinates
-    if [ -n "${LOCATION_SECRET}" ]; then
-        coords=$(run coordinates.sh 3600 "plain")
-    fi
+    coords=$(run coordinates.sh 3600 "plain")
 
     # Weather
-    if [ -n "${WEATHER_SECRET}" ]; then
-        run weather.sh 3600 "${protocol}" "${coords}"
-    fi
+    run weather.sh 3600 "${protocol}" "${coords}"
 
+    # Location
     run location.sh 3600 "${protocol}" "${coords}"
 
     # RSS
-    if [ -n "${RSS_API_KEY}" ]; then
-        run rss.sh 3600 "${protocol}"
-    fi
+    run rss.sh 3600 "${protocol}"
 
     # Email
     run mail.sh 300 "${protocol}"

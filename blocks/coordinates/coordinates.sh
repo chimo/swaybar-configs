@@ -1,8 +1,8 @@
 #!/bin/sh
 
 get_coordinates() (
-    wget -O- --header "Secret: ${LOCATION_SECRET}" \
-        "https://chromic.org/?location" -q
+    wget -O- --header "Secret: ${COORDINATES_SECRET}" \
+        "${COORDINATES_ENDPOINT}" -q
 )
 
 
