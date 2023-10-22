@@ -1,8 +1,8 @@
 #!/bin/sh -e
 
 get_token() (
-    endpoint="https://rss.chromic.org/api/greader.php/accounts/ClientLogin"
-    post_data="Email=chimo&Passwd=${RSS_API_KEY}"
+    endpoint="${API_ROOT}/accounts/ClientLogin"
+    post_data="Email=${USERNAME}&Passwd=${API_KEY}"
 
     response=$(wget -O- -q --post-data "${post_data}" "${endpoint}")
     auth=$(echo "${response}" | grep "Auth")
@@ -15,7 +15,7 @@ get_token() (
 get_unread_count() (
     token="${1}"
     header="Authorization:GoogleLogin auth=${token}"
-    endpoint='https://rss.chromic.org/api/greader.php/reader/api/0/unread-count?output=json'
+    endpoint="${API_ROOT}/reader/api/0/unread-count?output=json"
 
     response=$(wget -O- -q --header "${header}" "${endpoint}")
 
