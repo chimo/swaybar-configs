@@ -96,11 +96,11 @@ main() (
 
     # Icons before text when an icon is present.
     if [ -z "${icon}" ]; then
-        out=$(echo "${temperature}°, ${humidity}%")
+        out="${temperature}°, ${humidity}%"
 
         # Turns out "condition" isn't always there
         if [ -n "${condition}" ]; then
-            out=$(echo "${out}, ${condition}")
+            out="${out}, ${condition}"
         fi
 
         # echo "${temperature}°, ${humidity}%, ${condition}"
