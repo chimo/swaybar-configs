@@ -19,6 +19,11 @@ run() (
     envfile="${script_dir}/.env"
     statefile="${states_dir}/${filename%.*}".state
 
+    if [ ! -e "${script}" ]; then
+        echo "${script}: No such file"
+        return 1
+    fi
+
     if [ "${cooldown}" -eq 0 ]; then
         out=$(${script} "${@}")
     else
