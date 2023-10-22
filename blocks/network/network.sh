@@ -63,7 +63,7 @@ main() (
             | cut -d/ -f1
     )
 
-    wan_ip=$(wget -O- -q https://ip.chromic.org)
+    wan_ip=$(wget -O- -q "${IP_ENDPOINT}")
 
     if [ "${is_wireless}" -eq 1 ]; then
         output="${wlan_quality} (${wlan_ssid})"
