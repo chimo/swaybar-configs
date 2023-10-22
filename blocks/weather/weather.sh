@@ -82,7 +82,7 @@ main() (
         "Thunderstorm with rainshowers")
             icon="\xEF\x9D\xAC"
             ;;
-        "Light Rain"|"Light Drizzle")
+        "Light Rain"|"Light Drizzle"|"Light Rainshower")
             icon="\xEF\x9C\xBD"
             ;;
         "Rainshower")
