@@ -19,7 +19,7 @@ run() (
     envfile="${script_dir}/.env"
     statefile="${states_dir}/${filename%.*}".state
 
-    if [ ! -e "${script}" ]; then
+    if [ ! -f "${script}" ]; then
         echo "${script}: No such file"
         return 1
     fi
@@ -44,7 +44,7 @@ run() (
         # on the next run
         if [ "${now}" -gt "${next_run}" ]; then
             (
-                if [ -e "${envfile}" ]; then
+                if [ -f "${envfile}" ]; then
                     . "${envfile}"
                 fi
 
