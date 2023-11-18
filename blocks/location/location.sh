@@ -29,7 +29,6 @@ extract() (
 handle_click() (
     script_dir=$(dirname -- "$( readlink -f -- "$0"; )")
     states_dir="${script_dir}/../states"
-    blocks_dir="${script_dir}/../blocks"
 
     # TODO: If no coordinates, call coordinates.sh
     #       (even though this should be unlikely?)
@@ -57,10 +56,25 @@ main() (
         lat="${coords%,*}"
 
         json=$(get_location "${lon}" "${lat}")
-        suburb=$(extract "${json}" "suburb")
+        
+        location=""
 
-        if [ -n "${suburb}" ]; then
-            printf "\xEF\x8F\x85 %s" "${suburb}"
+        fields="
+neighbourhood
+suburb
+        "
+
+        for field in ${fields}
+        do
+            location=$(extract "$json" "${field}")
+
+            if [ -n "${location}" ]; then
+                break
+            fi
+        done
+
+        if [ -n "${location}" ]; then
+            printf "\xEF\x8F\x85 %s" "${location}"
         fi
     fi
 )
