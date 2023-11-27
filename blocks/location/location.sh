@@ -36,11 +36,9 @@ handle_click() (
 
     lon="${coords#*,}"
     lat="${coords%,*}"
+    url="https://www.openstreetmap.org/search?query=${lon}%2C${lat}"
 
-    json=$(get_location "${lon}" "${lat}")
-
-    # TODO: Open browser map instead?
-    foot -- sh -c "echo ${json}; read -r -s"
+    lxc exec qutebrowser -- sh -c "qutebrowser ${url} --qt-flag no-sandbox"
 )
 
 
