@@ -10,7 +10,7 @@ get_location() (
 )
 
 
-# FIXME: Poor `jq` replacement
+# Poor `jq` replacement
 extract() (
     json="${1}"
     field="${2}"
@@ -30,15 +30,13 @@ handle_click() (
     script_dir=$(dirname -- "$( readlink -f -- "$0"; )")
     states_dir="${script_dir}/../../states"
 
-    # TODO: If no coordinates, call coordinates.sh
-    #       (even though this should be unlikely?)
     coords=$(cat "${states_dir}/coordinates.state")
 
     lon="${coords#*,}"
     lat="${coords%,*}"
     url="https://www.openstreetmap.org/search?query=${lon}%2C${lat}"
 
-    lxc exec qutebrowser -- sh -c "qutebrowser ${url} --qt-flag no-sandbox"
+    qutebrowser.sh "${url}"
 )
 
 
