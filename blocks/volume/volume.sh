@@ -23,7 +23,7 @@ get_from_wireplumber() (
 
 handle_click() (
     script_dir=$(dirname -- "$( readlink -f -- "$0"; )")
-    states_dir="${script_dir}/../states"
+    states_dir="${script_dir}/../../states"
     
     wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 

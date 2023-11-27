@@ -134,8 +134,9 @@ listen() (
     do
         # FIXME: should actually parse the json
         block_name=$(echo "${line}" | awk '{print $3}' | tr -d '",')
+        block_dir="${block_name%.*}"
 
-        block_file="${blocks_dir}/${block_name}"
+        block_file="${blocks_dir}/${block_dir}/${block_name}"
 
         if [ -f "${block_file}" ]; then
             sh -c -- "${block_file} --click&"

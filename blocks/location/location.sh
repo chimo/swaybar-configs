@@ -28,7 +28,7 @@ extract() (
 
 handle_click() (
     script_dir=$(dirname -- "$( readlink -f -- "$0"; )")
-    states_dir="${script_dir}/../states"
+    states_dir="${script_dir}/../../states"
 
     # TODO: If no coordinates, call coordinates.sh
     #       (even though this should be unlikely?)
