@@ -70,7 +70,7 @@ check_host() (
     total_host=$(apk list -u | wc -l)
 
     if [ "${total_host}" -gt 0 ]; then
-        echo "host: ${total_host}"
+        printf "%b %s" "\xEF\x84\x89" "${total_host}"
     fi
 )
 
@@ -122,11 +122,11 @@ $containers
 EOF
 
     if [ "${total_updates}" -gt 0 ]; then
-        echo "updates: ${total_updates}, containers: ${total_containers}"
+        printf "%b %s, %b %s" "\xEF\x81\xA2" "${total_updates}" "\xEF\x91\xA6" "${total_containers}"
     fi
 
     if [ "${total_dist_upgrades}" -gt 0 ]; then
-        echo "dist-upgrades: ${total_dist_upgrades}"
+        printf "%b %s" "\xEE\x93\x82" "${total_dist_upgrades}"
     fi
 )
 
