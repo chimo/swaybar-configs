@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -eu
 
 get_weather() (
     lon="${1}"
@@ -43,7 +43,7 @@ get_temperature() (
 )
 
 
-main() (
+outdoors() (
     coords="${1}"
 
     if [ -z "${coords}" ]; then
@@ -60,7 +60,6 @@ main() (
     temperature=$(get_temperature "${json}")
     humidity=$(get_humidity "${json}")
     condition=$(get_condition "${json}")
-
 
     case "${condition}" in
         "Clear")
@@ -95,7 +94,7 @@ main() (
     esac
 
     # Icons before text when an icon is present.
-    if [ -z "${icon}" ]; then
+    if [ -z "${icon-}" ]; then
         out="${temperature}°, ${humidity}%"
 
         # Turns out "condition" isn't always there
@@ -103,11 +102,33 @@ main() (
             out="${out}, ${condition}"
         fi
 
-        # echo "${temperature}°, ${humidity}%, ${condition}"
         echo "${out}"
     else
         printf "%b %s°, %s%%" "${icon}" "${temperature}" "${humidity}"
     fi
+)
+
+
+indoors() (
+    json=$(
+        wget -O- --header "Secret: ${INDOORS_SECRET}" \
+            "${INDOORS_ENDPOINT}" -q
+    )
+
+    temp=$(_extract "${json}" 6 | cut -d "." -f1)
+    humidity=$(_extract "${json}" 7)
+
+    printf "%b %s, %s%%" "\xEF\x80\x95" "${temp}°" "${humidity}"
+)
+
+
+main() (
+    coords="${1-}"
+
+    weather=$(outdoors "${coords}")
+    house_temp=$(indoors)
+
+    echo "${weather} ${house_temp}"
 )
 
 
