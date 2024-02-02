@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -eu
 
 get_from_wireplumber() (
     if ! output=$(wpctl get-volume @DEFAULT_AUDIO_SINK@); then
@@ -31,8 +31,7 @@ handle_click() (
 )
 
 main() (
-    # FIXME: getops
-    action="${1}"
+    action="${1-}"
 
     if [ "${action}" = "--click" ]; then
         handle_click

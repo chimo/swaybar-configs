@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -eu
 
 get_coordinates() (
     wget -O- --header "Secret: ${COORDINATES_SECRET}" \

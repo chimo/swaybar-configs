@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -eu
 
 # TODO: Some more testing is required to handle multiple scenarios
 #       (disconnected, wired vs. wifi, multiple interfaces, etc.)

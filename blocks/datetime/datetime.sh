@@ -1,7 +1,6 @@
-#!/bin/sh
+#!/bin/sh -eu
 
-# FIXME: getops
-action="${1}"
+action="${1-}"
 
 if [ "${action}" = "--click" ]; then
     foot -- sh -c 'cal -y; read -r -s'

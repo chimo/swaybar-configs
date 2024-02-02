@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -eu
 
 get_battery_info() (
     battery_uevent="${1}"

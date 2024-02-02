@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -eu
 
 main() (
     nb=$(find ~/.local/mail/INBOX/new -type f | grep -vE ',[^,]*S[^,]*$' | wc -l)

@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -eu
 
 get_token() (
     endpoint="${API_ROOT}/accounts/ClientLogin"
@@ -39,7 +39,7 @@ launch_reader() (
 
 
 main() (
-    action="${1}"
+    action="${1-}"
 
     if [ "${action}" = "--click" ]; then
         launch_reader

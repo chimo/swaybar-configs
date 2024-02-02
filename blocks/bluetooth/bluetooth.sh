@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh -eu
 
 _get_devices_ids() (
     devices=$(bluetoothctl devices)

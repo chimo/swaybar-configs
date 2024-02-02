@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -eu
 
 # Define some paths
 main_dir=$(dirname -- "$( readlink -f -- "$0"; )")
@@ -96,7 +96,7 @@ run() (
         fi
     fi
 
-    if [ -n "${out}" ]; then
+    if [ -n "${out-}" ]; then
         if [ "${protocol}" = "plain" ]; then
             echo "${out}"
         else
