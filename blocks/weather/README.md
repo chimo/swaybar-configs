@@ -1,4 +1,4 @@
-# Weather
+# weather
 
 Gets weather conditions from a provided endpoint.
 
