@@ -13,8 +13,9 @@ usage() { echo "Usage: ${0} -b <block> [-p <json|plain>]" 1>&2; exit 1; }
 argparse() (
     block=""
     protocol="json"
+    cooldown="-1"
 
-    while getopts ':p:b:' opt; do
+    while getopts ':p:b:c:' opt; do
         case $opt in
             p)
                 protocol="${OPTARG}"
@@ -25,6 +26,9 @@ argparse() (
                 ;;
             b)
                 block="${OPTARG}"
+                ;;
+            c)
+                cooldown="${OPTARG}"
                 ;;
             *)
                 usage
@@ -38,7 +42,7 @@ argparse() (
         usage
     fi
 
-    main "${block}" "${protocol}"
+    main "${block}" "${protocol}" "${cooldown}"
 )
 
 
@@ -110,7 +114,7 @@ run() (
 main() (
     block="${1}"
     protocol="${2}"
-    cooldown="-1" # A value of "-1" for cooldown forces a refresh
+    cooldown="${3}"
 
     run "${block}" "${cooldown}" "${protocol}"
 )
