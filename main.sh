@@ -102,6 +102,9 @@ run_all() (
 
     # Datetime
     run datetime.sh 0 "${protocol}"
+
+    # Event
+    run events.sh 3600 "${protocol}"
 )
 
 
