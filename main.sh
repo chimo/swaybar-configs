@@ -1,9 +1,10 @@
-#!/bin/sh -e
+#!/bin/sh -eu
 
 # Define some paths
 main_dir=$(dirname -- "$( readlink -f -- "$0"; )")
 blocks_dir="${main_dir}/blocks"
 states_dir="${main_dir}/states"
+libs_dir="${main_dir}/libs"
 
 mkdir -p "${states_dir}"
 
@@ -13,54 +14,7 @@ run() (
     protocol="${3}"
     shift 3
 
-    script_dirname=$(basename "${filename}" ".sh")
-    script_dir="${blocks_dir}/${script_dirname}"
-    script="${script_dir}/${filename}"
-    envfile="${script_dir}/.env"
-    statefile="${states_dir}/${filename%.*}".state
-
-    if [ ! -f "${script}" ]; then
-        echo "${script}: No such file"
-        return 1
-    fi
-
-    if [ "${cooldown}" -eq 0 ]; then
-        out=$(${script} "${@}")
-    else
-        # Get last executed time
-        if [ -f "${statefile}" ]; then
-            last_run=$(stat -c %Y "${statefile}")
-        else
-            echo "" > "${statefile}"
-            last_run=0
-        fi
-
-        next_run=$((last_run + cooldown))
-        now=$(date +'%s')
-
-        out=$(cat "${statefile}")
-
-        # If the cooldown has expired, run the command so we get updated data
-        # on the next run
-        if [ "${now}" -gt "${next_run}" ]; then
-            (
-                if [ -f "${envfile}" ]; then
-                    . "${envfile}"
-                fi
-
-                ${script} "${@}" > "${statefile}"
-            )&
-        fi
-    fi
-
-    if [ -n "${out}" ]; then
-        if [ "${protocol}" = "plain" ]; then
-            echo "${out}"
-        else
-            printf '{"full_text": "%s", "name": "%s", "instance": "%s"}' "${out}" "${filename}" "${filename}"
-            echo "" # FIXME: newline...
-        fi
-    fi
+    "${libs_dir}"/run_block.sh -b "${filename}" -c "${cooldown}" -p "${protocol}" "${@}"
 )
 
 

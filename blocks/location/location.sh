@@ -41,7 +41,7 @@ handle_click() (
 
 
 main() (
-    param="${1}"
+    param="${1-}"
 
     if [ "${param}" = "--click" ]; then
         handle_click

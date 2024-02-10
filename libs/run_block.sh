@@ -2,8 +2,8 @@
 
 # Define some paths
 main_dir=$(dirname -- "$( readlink -f -- "$0"; )")
-blocks_dir="${main_dir}/blocks"
-states_dir="${main_dir}/states"
+blocks_dir="${main_dir}/../blocks"
+states_dir="${main_dir}/../states"
 
 mkdir -p "${states_dir}"
 
@@ -42,7 +42,7 @@ argparse() (
         usage
     fi
 
-    main "${block}" "${protocol}" "${cooldown}"
+    main "${block}" "${protocol}" "${cooldown}" "${@}"
 )
 
 
@@ -115,8 +115,9 @@ main() (
     block="${1}"
     protocol="${2}"
     cooldown="${3}"
+    shift 3
 
-    run "${block}" "${cooldown}" "${protocol}"
+    run "${block}" "${cooldown}" "${protocol}" "${@}"
 )
 
 
