@@ -36,5 +36,9 @@ seconds:
 
 * Make icons optional. Fallback on text when the convey information.
 * Maybe a screenshot for the readme?
+* Sometimes "$block" is the filename, sometimes just the name. Always use name
+  and add ".sh" just when we're about to run the script (if applicable).
+  Note: This will change the CLI behaviour from `run_block.sh -b network.sh` to
+        `run_block.sh -b network`, for example.
 * inotifyd for ad-hoc refreshes, when possible?
 
