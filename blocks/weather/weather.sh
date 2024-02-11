@@ -132,7 +132,7 @@ main() (
         main_dir=$(dirname -- "$( readlink -f -- "$0"; )")
         libs_dir="${main_dir}/../../libs"
 
-        coords=$("${libs_dir}/run_block.sh" -b "coordinates.sh" -c "3600" -p "plain")
+        coords=$("${libs_dir}/run_block.sh" -b "coordinates.sh" -p "plain")
     fi
 
     weather=$(outdoors "${coords}")
