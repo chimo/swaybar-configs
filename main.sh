@@ -139,7 +139,6 @@ main() (
     fi
 
     blocks=$(get_blocks)
-    echo "${blocks}"
 
     (while true
     do
