@@ -19,8 +19,8 @@ usage() (
 Usage: ${0} -b <block> [-c <cooldown>] [-p <json|plain>]
 
 options:
--b      the block to run (ex: datetime.sh)
--c      cooldown value in seconds. Defaults to block's config value
+-b      the block to run (ex: datetime.sh).
+-c      cooldown value in seconds. Defaults to block's config value.
 -p      protocol ("json" or "plain"). Defaults to "json".
 EOF
 
@@ -31,7 +31,7 @@ EOF
 
 argparse() (
     block=""
-    cooldown="-1"
+    cooldown=""
     protocol="json"
 
     while getopts ':b:c:p:' opt; do
@@ -61,7 +61,7 @@ argparse() (
         usage
     fi
 
-    main "${block}" "${protocol}" "${cooldown}" "${@}"
+    main "${block}" "${protocol}" "${cooldown}"
 )
 
 
@@ -69,7 +69,6 @@ run() (
     filename="${1}"
     cooldown="${2}"
     protocol="${3}"
-    shift 3
 
     script_dirname=$(basename "${filename}" ".sh")
     script_dir="${blocks_dir}/${script_dirname}"
@@ -108,6 +107,7 @@ run() (
         # If the cooldown has expired, run the command so we get updated data
         # on the next run
         if [ "${now}" -gt "${next_run}" ]; then
+
             (
                 if [ -e "${envfile}" ]; then
                     . "${envfile}"
@@ -129,13 +129,36 @@ run() (
 )
 
 
+get_cooldown() (
+    # Remove file extension from filename to get block name.
+    block="${1%.*}"
+    config_file="${blocks_dir}/${block}/config"
+
+    while read -r line
+    do
+        key="${line%=*}"
+
+        if [ "${key}" = "cooldown" ]; then
+            value="${line#*=}"
+
+            echo "${value}"
+            break
+        fi
+    done < "${config_file}"
+)
+
+
 main() (
     block="${1}"
     protocol="${2}"
     cooldown="${3}"
-    shift 3
 
-    run "${block}" "${cooldown}" "${protocol}" "${@}"
+    # Get the block's configured cooldown value if one isn't provided
+    if [ -z "${cooldown}" ]; then
+        cooldown=$(get_cooldown "${block}")
+    fi
+
+    run "${block}" "${cooldown}" "${protocol}"
 )
 
 

@@ -8,50 +8,31 @@ libs_dir="${main_dir}/libs"
 
 mkdir -p "${states_dir}"
 
-run() (
-    filename="${1}"
-    cooldown="${2}"
-    protocol="${3}"
-    shift 3
-
-    "${libs_dir}"/run_block.sh -b "${filename}" -c "${cooldown}" -p "${protocol}" "${@}"
+# https://unix.stackexchange.com/a/598047
+is_integer ()
+(
+    case "${1#[+-]}" in
+        (*[!0123456789]*) return 1 ;;
+        ('')              return 1 ;;
+        (*)               return 0 ;;
+    esac
 )
 
 
-run_all() (
-    protocol="${1}"
-    # Network
-    run network.sh 3600 "${protocol}"
+run() (
+    blocks="${1}"
+    protocol="${2}"
 
-    # Packages due for updates in running containers
-    run updates.sh 3600 "${protocol}"
+    while IFS= read -r line
+    do
+        block="${line%=*}"
+        cooldown="${line#*=}"
 
-    # Bluetooth
-    run bluetooth.sh 600 "${protocol}"
+        "${libs_dir}"/run_block.sh -b "${block}.sh" -c "${cooldown}" -p "${protocol}"
+    done <<EOF
+$blocks
+EOF
 
-    # Battery
-    run battery.sh 60 "${protocol}"
-
-    # Weather
-    run weather.sh 3600 "${protocol}"
-
-    # Location
-    run location.sh 3600 "${protocol}"
-
-    # RSS
-    run rss.sh 3600 "${protocol}"
-
-    # Email
-    run mail.sh 300 "${protocol}"
-
-    # Audio state
-    run volume.sh 5 "${protocol}"
-
-    # Datetime
-    run datetime.sh 0 "${protocol}"
-
-    # Event
-    run events.sh 3600 "${protocol}"
 )
 
 
@@ -95,10 +76,61 @@ listen() (
 )
 
 
+get_block_cooldown() (
+    config_file="${1}"
+
+    while read -r line
+    do
+        key="${line%=*}"
+
+        if [ "${key}" = "cooldown" ]; then
+            value="${line#*=}"
+
+            echo "${value}"
+            break
+        fi
+    done < "${config_file}"
+)
+
+
+get_blocks() (
+    main_config_file="${main_dir}/config"
+
+    if [ ! -f "${main_config_file}" ]; then
+        echo "Couldn't find config file: '${main_config_file}'" 1>&2
+        exit 1
+    fi
+
+    while read -r block
+    do
+        # Skip blank lines
+        if [ -z "${block}" ]; then
+            continue
+        fi
+
+        cooldown=""
+        block_config_file="${blocks_dir}/${block}/config"
+
+        # Check if block has config file
+        if [ -f "${block_config_file}" ]; then
+            cooldown=$(get_block_cooldown "${block_config_file}")
+        fi
+
+        # Default cooldown is an hour
+        # TODO: should default to an hour if the value isn't a valid int
+        if ! is_integer "${cooldown}"; then
+            cooldown="3600"
+        fi
+
+        echo "${block}=${cooldown}"
+    done < "${main_config_file}"
+)
+
+
 main() (
     protocol="plain"
 
-    if [ "${1}" = "--json" ]; then
+    if [ "${1-}" = "--json" ]; then
         protocol="json"
     fi
 
@@ -106,9 +138,12 @@ main() (
         send_header
     fi
 
+    blocks=$(get_blocks)
+    echo "${blocks}"
+
     (while true
     do
-        out=$(run_all "${protocol}")
+        out=$(run "${blocks}" "${protocol}")
 
         format "${out}" "${protocol}"
 

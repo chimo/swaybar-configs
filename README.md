@@ -35,7 +35,6 @@ seconds:
 ## TODOs
 
 * Make icons optional. Fallback on text when the convey information.
-* Make blocks configurable instead of being hardcoded in main.sh
 * Maybe a screenshot for the readme?
 * inotifyd for ad-hoc refreshes, when possible?
 
