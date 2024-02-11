@@ -82,14 +82,14 @@ run() (
     fi
 
     if [ "${cooldown}" -eq 0 ]; then
-        out=$(${script} "${@}")
+        out=$(${script})
     elif [ "${cooldown}" -eq -1 ]; then
         # Cache-busting implies running in the foreground
         if [ -e "${envfile}" ]; then
             . "${envfile}"
         fi
 
-        out=$(${script} "${@}" | tee "${statefile}")
+        out=$(${script} | tee "${statefile}")
     else
         # Get last executed time
         if [ -f "${statefile}" ]; then
@@ -113,7 +113,7 @@ run() (
                     . "${envfile}"
                 fi
 
-                ${script} "${@}" > "${statefile}"
+                ${script} > "${statefile}"
             )&
         fi
     fi
