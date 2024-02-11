@@ -125,6 +125,16 @@ indoors() (
 main() (
     coords="${1-}"
 
+    # If coords weren't provided as args, get them from the "coordinates.sh"
+    # block
+    if [ -z "${coords}" ]; then
+        # Define some paths
+        main_dir=$(dirname -- "$( readlink -f -- "$0"; )")
+        libs_dir="${main_dir}/../../libs"
+
+        coords=$("${libs_dir}/run_block.sh" -b "coordinates.sh" -c "3600" -p "plain")
+    fi
+
     weather=$(outdoors "${coords}")
     house_temp=$(indoors)
 

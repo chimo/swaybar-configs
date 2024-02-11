@@ -21,11 +21,7 @@ run() (
 run_all() (
     protocol="${1}"
     # Network
-    # TODO: split signal quality out of this so we can run it more frequently
     run network.sh 3600 "${protocol}"
-
-    # VPN status
-    # TODO
 
     # Packages due for updates in running containers
     run updates.sh 3600 "${protocol}"
@@ -36,14 +32,11 @@ run_all() (
     # Battery
     run battery.sh 60 "${protocol}"
 
-    # Get coordinates
-    coords=$(run coordinates.sh 3600 "plain")
-
     # Weather
-    run weather.sh 3600 "${protocol}" "${coords}"
+    run weather.sh 3600 "${protocol}"
 
     # Location
-    run location.sh 3600 "${protocol}" "${coords}"
+    run location.sh 3600 "${protocol}"
 
     # RSS
     run rss.sh 3600 "${protocol}"
@@ -105,7 +98,6 @@ listen() (
 main() (
     protocol="plain"
 
-    # FIXME: getops
     if [ "${1}" = "--json" ]; then
         protocol="json"
     fi

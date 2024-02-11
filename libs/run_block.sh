@@ -7,28 +7,47 @@ states_dir="${main_dir}/../states"
 
 mkdir -p "${states_dir}"
 
-usage() { echo "Usage: ${0} -b <block> [-p <json|plain>]" 1>&2; exit 1; }
+usage() (
+    message=""
+    newline="
+"
+
+    while IFS= read -r line
+    do
+        message="${message}${line}${newline}"
+    done <<EOF
+Usage: ${0} -b <block> [-c <cooldown>] [-p <json|plain>]
+
+options:
+-b      the block to run (ex: datetime.sh)
+-c      cooldown value in seconds. Defaults to block's config value
+-p      protocol ("json" or "plain"). Defaults to "json".
+EOF
+
+    echo "${message}" 1>&2
+    exit 1
+)
 
 
 argparse() (
     block=""
-    protocol="json"
     cooldown="-1"
+    protocol="json"
 
-    while getopts ':p:b:c:' opt; do
+    while getopts ':b:c:p:' opt; do
         case $opt in
+            b)
+                block="${OPTARG}"
+                ;;
+            c)
+                cooldown="${OPTARG}"
+                ;;
             p)
                 protocol="${OPTARG}"
 
                 [ "${protocol}" = "json" ] \
                     || [ "${protocol}" = "plain" ] \
                     || usage
-                ;;
-            b)
-                block="${OPTARG}"
-                ;;
-            c)
-                cooldown="${OPTARG}"
                 ;;
             *)
                 usage
@@ -66,13 +85,12 @@ run() (
     if [ "${cooldown}" -eq 0 ]; then
         out=$(${script} "${@}")
     elif [ "${cooldown}" -eq -1 ]; then
-        (
-            if [ -e "${envfile}" ]; then
-                . "${envfile}"
-            fi
+        # Cache-busting implies running in the foreground
+        if [ -e "${envfile}" ]; then
+            . "${envfile}"
+        fi
 
-            ${script} "${@}" > "${statefile}"
-        )&
+        out=$(${script} "${@}" | tee "${statefile}")
     else
         # Get last executed time
         if [ -f "${statefile}" ]; then
@@ -104,8 +122,8 @@ run() (
         if [ "${protocol}" = "plain" ]; then
             echo "${out}"
         else
-            printf '{"full_text": "%s", "name": "%s", "instance": "%s"}' "${out}" "${filename}" "${filename}"
-            echo "" # FIXME: newline...
+            printf '{"full_text": "%s", "name": "%s", "instance": "%s"}\n' \
+                "${out}" "${filename}" "${filename}"
         fi
     fi
 )

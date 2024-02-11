@@ -27,13 +27,8 @@ extract() (
 
 
 handle_click() (
-    script_dir=$(dirname -- "$( readlink -f -- "$0"; )")
-    states_dir="${script_dir}/../../states"
-
-    coords=$(cat "${states_dir}/coordinates.state")
-
-    lon="${coords#*,}"
-    lat="${coords%,*}"
+    lon="${1}"
+    lat="${2}"
     url="https://www.openstreetmap.org/search?query=${lon}%2C${lat}"
 
     qutebrowser.sh "${url}"
@@ -42,15 +37,29 @@ handle_click() (
 
 main() (
     param="${1-}"
+    coords="" # TODO: getopts and handle [-c] <coords>
+
+    # If coords weren't provided as args, get them from the "coordinates.sh"
+    # block
+    if [ -z "${coords}" ]; then
+        # Define some paths
+        main_dir=$(dirname -- "$( readlink -f -- "$0"; )")
+        libs_dir="${main_dir}/../../libs"
+
+        coords=$("${libs_dir}/run_block.sh" -b "coordinates.sh" -c "3600" -p "plain")
+    fi
+
+    lon="${coords#*,}"
+    lat="${coords%,*}"
+
+    if [ -z "${lon}" ] || [ -z "${lat}" ]; then
+        echo "Invalid coords: '${coords}'" 1>&2
+        exit 1
+    fi
 
     if [ "${param}" = "--click" ]; then
-        handle_click
+        handle_click "${lon}" "${lat}"
     else
-        coords="${param}"
-
-        lon="${coords#*,}"
-        lat="${coords%,*}"
-
         json=$(get_location "${lon}" "${lat}")
         
         location=""
