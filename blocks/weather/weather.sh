@@ -61,6 +61,13 @@ outdoors() (
     humidity=$(get_humidity "${json}")
     condition=$(get_condition "${json}")
 
+    # Don't print anything if we didn't get any data back.
+    # This happened once when the ECCC XML had an empty <currentConditions/>.
+    if [ -z "${temperature}" ] && [ -z "${humidity}" ] && [ -z "${condition}" ]; then
+        echo ""
+        return
+    fi
+
     case "${condition}" in
         "Clear")
             icon="\xEF\x86\x86" # Moon
